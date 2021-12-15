@@ -1,0 +1,26 @@
+{% extends "whitebox/base_template.html" %}
+
+{% block content %}
+
+<h1>{{ character.name }} the  {{ character.get_role }}</h1>
+<table>
+    <tr><td>Strength:</td><td align="right">{{ character.strength }}</td></tr>
+    <tr><td>Dexterity:</td><td align="right">{{ character.dexterity }}</td></tr>
+    <tr><td>Constitution:</td><td align="right">{{ character.constitution }}</td></tr>
+    <tr><td>Intelligence:</td><td align="right">{{ character.intelligence }}</td></tr>
+    <tr><td>Wisdom:</td><td align="right">{{ character.wisdom }}</td></tr>
+    <tr><td>Charisma:</td><td align="right">{{ character.charisma }}</td></tr>
+    <tr><td>Gold:</td><td align="right">{{ character.gold }}</td></tr>
+    <tr><td>Silver:</td><td align="right">{{ character.silver }}</td></tr>
+    <tr><td>Copper:</td><td align="right">{{ character.copper }}</td></tr>
+</table>
+
+{% if request.user.is_authenticated and not character.finalized and request.user == character.user %}
+<p><a href="/whitebox/{{ character.id }}/FinalizeForm">Finalize Character</a></p>
+{% endif %}
+
+{% if request.user.is_authenticated and request.user == character.user %}
+<p><a href="/whitebox/{{ character.id }}/delete">Delete Character</a></p>
+{% endif %}
+
+{% endblock %}

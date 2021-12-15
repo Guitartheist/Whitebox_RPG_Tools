@@ -1,0 +1,14 @@
+{% extends "whitebox/base_template.html" %}
+
+{% block content %}
+
+<h1>Generate Character</h1>
+<form action="{% url 'whitebox:generate' %}" method="post">
+{% csrf_token %}
+<fieldset>
+        <label>Name</label> <input type="text" name="name" value="Scrub">
+</fieldset>
+<input type="submit" value="Generate">
+</form>
+
+{% endblock %}

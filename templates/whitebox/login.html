@@ -1,0 +1,15 @@
+{% extends "whitebox/base_template.html" %}
+
+{% block content %}
+
+<h1>User Login</h1>
+<form action="{% url 'whitebox:signin' %}" method="post">
+{% csrf_token %}
+<fieldset>
+        <p><label>Username</label> <input type="text" name="username" value="Username"></p>
+        <p><label>Password</label> <input type="password" name="password" value="password"></p>
+</fieldset>
+<input type="submit" value="Login">
+</form>
+
+{% endblock %}

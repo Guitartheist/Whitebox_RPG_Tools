@@ -1,0 +1,18 @@
+{% extends "whitebox/base_template.html" %}
+
+{% block content %}
+
+{% if character_list %}
+<table><tr><td align="left">
+    Characters:
+    <ul>
+    {% for character in character_list %}
+        <li><a href="/whitebox/{{ character.id }}/ViewDetail">{{ character.name }} the {{ character.get_role }}</a></li>
+    {% endfor %}
+    </ul>
+</td></tr></table>
+{% else %}
+    <p>No characters are available.</p>
+{% endif %}
+
+{% endblock %}

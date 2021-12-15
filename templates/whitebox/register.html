@@ -1,0 +1,18 @@
+{% extends "whitebox/base_template.html" %}
+
+{% block content %}
+
+<h1>Register User</h1>
+<form action="{% url 'whitebox:register' %}" method="post">
+{% csrf_token %}
+<fieldset>
+        <table>
+                <tr><td><label>Username</label></td><td><input type="text" name="username" value="Username"></td></tr>
+        <tr><td><label>Email</label> </td><td><input type="text" name="email" value="email@address.com"></td></tr>
+        <tr><td><label>Password</label></td><td> <input type="password" name="password" value="password"></td></tr>
+        </table>
+</fieldset>
+<input type="submit" value="Register User">
+</form>
+
+{% endblock %}

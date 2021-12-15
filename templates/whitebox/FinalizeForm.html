@@ -1,0 +1,127 @@
+{% extends "whitebox/base_template.html" %}
+
+{% block content %}
+
+{% if request.user.is_authenticated %}
+<h1>Finalize {{ character.name }}</h1>
+You can dump points from your other stats into your most important stat based on your chosen class. Your most important stat cannot exceed 18 and you cannot dump a stat so that it goes below 9.
+<div id="app">
+<form action="{% url 'whitebox:finalize' character.id %}" method="post">
+    {% csrf_token %}
+<table>
+    <tr><td>Character Role:</td><td colspan="2">
+        <select v-model="c_role" name="c_role">
+            <option value={{ character.FIGHTER }}>Fighter (Strength)</option>
+            <option value={{ character.MAGE }}>Mage (Intelligence)</option>
+            <option value={{ character.THIEF }}>Thief (Dexterity)</option>
+            <option value={{ character.CLERIC }}>Cleric (Wisdom)</option>
+        </select></td>
+    </tr>
+    <tr><td>Strength:</td><td align="right"><% strength.original %></td><td><label>Dump</label> <input v-model="strength.dump" type="number" name="s" value="0" min="0" v-on:click="dumpCheck"></td><td><% strength.message %></td></tr>
+    <tr><td>Dexterity:</td><td align="right"><% dexterity.original %></td><td><label>Dump</label> <input v-model="dexterity.dump" type="number" name="d" value="0" min="0" v-on:click="dumpCheck"></td><td><% dexterity.message %></td></tr>
+    <tr><td>Constitution:</td><td align="right"><% constitution.original %></td><td><label>Dump</label> <input v-model="constitution.dump" type="number" name="co" value="0" min="0" v-on:click="dumpCheck"></td><td><% constitution.message %></td></tr>
+    <tr><td>Intelligence:</td><td align="right"><% intelligence.original %></td><td><label>Dump</label> <input v-model="intelligence.dump" type="number" name="i" value="0" min="0" v-on:click="dumpCheck"></td><td><% intelligence.message %></td></tr>
+    <tr><td>Wisdom:</td><td align="right"><% wisdom.original %></td><td><label>Dump</label> <input v-model="wisdom.dump" type="number" name="w" value="0" min="0" v-on:click="dumpCheck"></td><td><% wisdom.message %></td></tr>
+    <tr><td>Charisma:</td><td align="right"><% charisma.original %></td><td><label>Dump</label> <input v-model="charisma.dump" type="number" name="ch" value="0"  min="0" v-on:click="dumpCheck"></td><td><% charisma.message %></td></tr>
+</table>
+    <input type="submit" value="Finalize">
+</form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script>
+      var app = new Vue({
+        el: '#app',
+        delimiters: ['<%', '%>'],
+        data: {
+            strength: {
+                original : {{ character.strength }},
+                dump : 0,
+                message : "Final Value: {{ character.strength }}"
+            },
+            dexterity : {
+                original: {{ character.dexterity }},
+                dump : 0,
+                message : "Final Value: {{ character.dexterity }}"
+            },
+            constitution : {
+                original : {{ character.constitution }},
+                dump : 0,
+                message : "Final Value: {{ character.constitution }}"
+            },
+            intelligence : {
+                original : {{ character.intelligence }},
+                dump : 0,
+                message : "Final Value: {{ character.intelligence }}"
+            },
+            wisdom : {
+                original : {{ character.wisdom }},
+                dump : 0,
+                message : "Final Value: {{ character.wisdom }}"
+            },
+            charisma : {
+                original : {{ character.charisma }},
+                dump : 0,
+                message : "Final Value: {{ character.charisma }}"
+            },
+            dumpTotal : 0,
+            c_role : {{ character.FIGHTER }}
+        },
+        methods: {
+            dumpCheck: function (event) {
+                if (this.strength.dump > 0 && this.strength.original - this.strength.dump < 9) { this.strength.message = "You cannot dump a stat so that its value goes below 9."; }
+                else {this.strength.message = "Final Value: " + (this.strength.original - this.strength.dump);}
+
+                if (this.dexterity.dump > 0 && this.dexterity.original - this.dexterity.dump < 9) { this.dexterity.message = "You cannot dump a stat so that its value goes below 9."; }
+                else {this.dexterity.message = "Final Value: " + (this.dexterity.original - this.dexterity.dump);}
+
+                if (this.constitution.dump > 0 && this.constitution.original - this.constitution.dump < 9) { this.constitution.message = "You cannot dump a stat so that its value goes below 9."; }
+                else {this.constitution.message = "Final Value: " + (this.constitution.original - this.constitution.dump);}
+
+                if (this.intelligence.dump > 0 && this.intelligence.original - this.intelligence.dump < 9) { this.intelligence.message = "You cannot dump a stat so that its value goes below 9."; }
+                else {this.intelligence.message = "Final Value: " + (this.intelligence.original - this.intelligence.dump);}
+
+                if (this.wisdom.dump>0 && this.wisdom.original - this.wisdom.dump < 9) { this.wisdom.message = "You cannot dump a stat so that its value goes below 9."; }
+                else {this.wisdom.message = "Final Value: " + (this.wisdom.original - this.wisdom.dump);}
+                if (this.charisma.dump>0 && this.charisma.original - this.charisma.dump < 9) { this.charisma.message = "You cannot dump a stat so that its value goes below 9."; }
+                else {this.charisma.message = "Final Value: " + (this.charisma.original - this.charisma.dump);}
+
+                this.dumpTotal = Number(this.strength.dump) + Number(this.dexterity.dump) + Number(this.constitution.dump) + Number(this.intelligence.dump) + Number(this.wisdom.dump) + Number(this.charisma.dump);
+
+                if (this.c_role == {{ character.FIGHTER }}) {
+                            if (Number(this.strength.original) + this.dumpTotal > 18) { this.strength.message = "You cannot pump a stat above 18."; }
+                            else (this.strength.message = "Final Value: " + (Number(this.strength.original) + this.dumpTotal - Number(this.strength.dump)))
+                        }
+
+                if (this.c_role == {{ character.MAGE }}) {
+                    if (Number(this.intelligence.original) + this.dumpTotal > 18) { this.intelligence.message = "You cannot pump a stat above 18."; }
+                    else (this.intelligence.message = "Final Value: " + (Number(this.intelligence.original) + this.dumpTotal - Number(this.intelligence.dump)))
+                }
+
+                if (this.c_role == {{ character.THIEF }}) {
+                    if (Number(this.dexterity.original) + this.dumpTotal > 18) { this.dexterity.message = "You cannot pump a stat above 18."; }
+                    else (this.dexterity.message = "Final Value: " + (Number(this.dexterity.original) + this.dumpTotal - Number(this.dexterity.dump)))
+                }
+
+                if (this.c_role == {{ character.CLERIC }}) {
+                    if (Number(this.wisdom.original) + this.dumpTotal > 18) { this.wisdom.message = "You cannot pump a stat above 18."; }
+                    else (this.wisdom.message = "Final Value: " + (Number(this.wisdom.original) + this.dumpTotal - Number(this.wisdom.dump)))
+                }
+
+                return;
+            }
+        }
+      })
+</script>
+
+{% endif %}
+
+{% if not request.user.is_authenticated and not character.finalized %}
+You must be logged in and own the character in question in order to finalize.
+{% endif %}
+
+{% if request.user.is_authenticated and character.finalized %}
+Character is already finalized.
+{% endif %}
+
+{% endblock %}
