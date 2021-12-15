@@ -1,7 +1,10 @@
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.parsers import JSONParser
 from django.shortcuts import render
 from django.urls import reverse
 from .models import Character
+from .serializers import CharacterSerializer
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 
@@ -107,3 +110,41 @@ def delete(request, character_id):
     character_list = Character.objects.all()
     context = {'character_list': character_list}
     return render(request, 'whitebox/ViewAll.html', context)
+
+@csrf_exempt
+def character_list(request):
+    if request.method == 'GET':
+        characters = Character.objects.all()
+        serializer = CharacterSerializer(characters, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+    elif request.method == 'POST':
+        data = JSONParser.parse(request)
+        serializer = SnippetSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
+
+@csrf_exempt
+def character_detail(request, pk):
+    try:
+        character = Character.objects.get(pk=pk)
+    except Character.DoesNotExist:
+        return HttpResponse(status=404)
+
+    if request.method == 'GET':
+        serializer = CharacterSerializer(character)
+        return JsonResponse(serializer.data)
+
+    elif request.method == 'PUT':
+        data = JSONParser.parse(reqest)
+        serializer = CharacterSerializer(character, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data)
+        return JsonResponse(serializer.errors, status=400)
+
+    elif request.method == 'DELETE':
+        character.delete()
+        return HttpResponse(status=204)

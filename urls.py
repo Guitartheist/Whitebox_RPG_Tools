@@ -30,4 +30,7 @@ urlpatterns = [
     path('<int:character_id>/finalize', views.finalize, name='finalize'),
     # ex: /whitebox/5/delete
     path('<int:character_id>/delete', views.delete, name='delete'),
+    # REST views
+    path('character_list', views.character_list),
+    path('characters/<int:pk>/', views.character_detail)
 ]
