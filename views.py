@@ -148,3 +148,6 @@ def character_detail(request, pk):
     elif request.method == 'DELETE':
         character.delete()
         return HttpResponse(status=204)
+
+def vue_test(request):
+    return render(request, 'whitebox/vue_test.html')
