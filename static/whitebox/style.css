@@ -41,3 +41,18 @@ li a:link {
 li a:visited {
 	color: #FF3300;
 	}
+
+.CharacterList {
+    text-align: left;
+    width: 50vw;
+}
+
+.CharacterDetail {
+    text-align: left;
+    width: 50vw;
+}
+
+.CharacterStatistic {
+    text-align: right;
+    width: 100px;
+}
