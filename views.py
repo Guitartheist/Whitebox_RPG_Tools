@@ -112,6 +112,14 @@ def delete(request, character_id):
     return render(request, 'whitebox/ViewAll.html', context)
 
 @csrf_exempt
+def character_generate(request, name):
+    character = Character()
+    character.roll(name)
+    character.save()
+    serializer = CharacterSerializer(character)
+    return JsonResponse(serializer.data, status=201)
+
+@csrf_exempt
 def character_list(request):
     if request.method == 'GET':
         characters = Character.objects.all()
