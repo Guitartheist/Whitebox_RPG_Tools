@@ -45,16 +45,26 @@ li a:visited {
 .CharacterList {
     text-align: left;
     width: 50vw;
+    height: 70vh;
 }
 
 .CharacterDetail {
     text-align: left;
+    vertical-align: top;
     width: 50vw;
+    height: 70vh;
 }
 
 .CharacterStatistic {
     text-align: right;
+    vertical-align: top;
     width: 100px;
+}
+
+.CharacterCreate {
+    text-align: left;
+    width: 50vw;
+    height: 70vh;
 }
 
 .Navigation {
