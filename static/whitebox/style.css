@@ -67,6 +67,18 @@ li a:visited {
     height: 70vh;
 }
 
+.LoginVue {
+    text-align: left;
+    width: 50vw;
+    height: 70vh;
+}
+
+.RegisterVue {
+    text-align: left;
+    width: 50vw;
+    height: 70vh;
+}
+
 .Navigation {
     padding-left: 20px;
     padding-right: 20px;

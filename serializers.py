@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from whitebox.models import Character
+from django.contrib.auth.models import User
 
 class CharacterSerializer(serializers.ModelSerializer):
     character_role = serializers.CharField(source='get_role')

@@ -7,6 +7,7 @@
     <title>{% block title %}Whitebox{% endblock %}</title>
 </head>
     <body>
+    {% csrf_token %}
     <center><h1>Whitebox Character Manager</h1></center>
         <div id="app"></div>
         <script type="text/javascript" src="{% static 'src/vue/dist/js/chunk-vendors.js' %}"></script>

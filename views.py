@@ -47,8 +47,14 @@ def LoginForm(request):
     return render(request, 'whitebox/login.html', context)
 
 def signin(request):
-    u = request.POST['username']
-    p = request.POST['password']
+    u = request.POST.get('username')
+    p = request.POST.get('password')
+    # if username is null check for JSON POST data
+    if (u == None):
+        j = JSONParser()
+        data = j.parse(request)
+        u = data['username']
+        p = data['password']
     user = authenticate(request, username=u, password=p)
     if user is not None:
         login(request, user)
@@ -66,9 +72,16 @@ def RegisterForm(request):
     return render(request, 'whitebox/register.html', context)
 
 def register(request):
-    username = request.POST['username']
-    email = request.POST['email']
-    password = request.POST['password']
+    username = request.POST.get('username')
+    email = request.POST.get('email')
+    password = request.POST.get('password')
+    # if username is null check for JSON POST data
+    if (username == None):
+        j = JSONParser()
+        data = j.parse(request)
+        username = data['username']
+        password = data['password']
+        email = data['email']
     u = User.objects.create_user(username,email,password)
     u.save()
     return LoginForm(request)
@@ -111,30 +124,27 @@ def delete(request, character_id):
     context = {'character_list': character_list}
     return render(request, 'whitebox/ViewAll.html', context)
 
-@csrf_exempt
 def character_generate(request, name):
     character = Character()
     character.roll(name)
+    if request.user.is_authenticated:
+        character.user = request.user
     character.save()
     serializer = CharacterSerializer(character)
     return JsonResponse(serializer.data, status=201)
 
-@csrf_exempt
 def character_list(request):
     if request.method == 'GET':
         characters = Character.objects.all()
         serializer = CharacterSerializer(characters, many=True)
         return JsonResponse(serializer.data, safe=False)
 
-    elif request.method == 'POST':
-        data = JSONParser.parse(request)
-        serializer = SnippetSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+def my_character_list(request):
+    if request.method == 'GET':
+        characters = Character.objects.filter(user = request.user.id)
+        serializer = CharacterSerializer(characters, many=True)
+        return JsonResponse(serializer.data, safe=False)
 
-@csrf_exempt
 def character_detail(request, pk):
     try:
         character = Character.objects.get(pk=pk)
@@ -145,17 +155,16 @@ def character_detail(request, pk):
         serializer = CharacterSerializer(character)
         return JsonResponse(serializer.data)
 
-    elif request.method == 'PUT':
-        data = JSONParser.parse(reqest)
-        serializer = CharacterSerializer(character, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status=400)
-
     elif request.method == 'DELETE':
         character.delete()
         return HttpResponse(status=204)
+
+#if client has a valid session, return their username
+def get_username(request):
+    data = {'username' : ''}
+    if request.user.is_authenticated:
+        data = {'username' : request.user.username}
+    return JsonResponse(data)
 
 def vue_test(request):
     return render(request, 'whitebox/vue_test.html')
