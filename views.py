@@ -95,7 +95,7 @@ def character_detail(request, pk):
             i = data['intelligence']
             w = data['wisdom']
             ch = data['charisma']
-            print(character.finalize(c_role, s, d, co, i, w, ch))
+            character.finalize(c_role, s, d, co, i, w, ch)
             character.save()
             serializer = CharacterSerializer(character)
             return JsonResponse(serializer.data)
