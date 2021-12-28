@@ -9,8 +9,8 @@ urlpatterns = [
     path('signin', views.signin, name='signin'),
     path('LogoutPage', views.LogoutPage, name='LogoutPage'),
     path('character_generate/<str:name>/', views.character_generate),
-    path('character_list', views.character_list),
-    path('my_character_list', views.my_character_list),
+    path('CharacterList', views.CharacterListView.as_view()),
+    path('MyCharacterList', views.MyCharacterListView.as_view()),
     #supports GET, DELETE, and PUT
     path('characters/<int:pk>/', views.character_detail),
     path('get_username', views.get_username),

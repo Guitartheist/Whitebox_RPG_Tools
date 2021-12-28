@@ -1,6 +1,8 @@
 from django.http import HttpResponse, Http404, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
+from rest_framework import generics
+from rest_framework.pagination import PageNumberPagination
 from django.shortcuts import render
 from django.urls import reverse
 from .models import Character
@@ -52,17 +54,22 @@ def character_generate(request, name):
     serializer = CharacterSerializer(character)
     return JsonResponse(serializer.data, status=201)
 
-def character_list(request):
-    if request.method == 'GET':
-        characters = Character.objects.all()
-        serializer = CharacterSerializer(characters, many=True)
-        return JsonResponse(serializer.data, safe=False)
+class CharacterListPagination(PageNumberPagination):
+    page_size = 15
+    page_size_query_param = 'page_size'
+    max_page_size = 100
 
-def my_character_list(request):
-    if request.method == 'GET':
-        characters = Character.objects.filter(user = request.user.id)
-        serializer = CharacterSerializer(characters, many=True)
-        return JsonResponse(serializer.data, safe=False)
+class CharacterListView(generics.ListAPIView):
+    queryset = Character.objects.order_by('id')
+    serializer_class = CharacterSerializer
+    pagination_class = CharacterListPagination
+
+class MyCharacterListView(generics.ListAPIView):
+    def get_queryset(self):
+        u = self.request.user
+        return Character.objects.order_by('id').filter(user = u)
+    serializer_class = CharacterSerializer
+    pagination_class = CharacterListPagination
 
 def character_detail(request, pk):
     try:
