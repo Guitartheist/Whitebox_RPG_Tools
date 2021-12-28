@@ -43,17 +43,6 @@ def register(request):
     u.save()
     return HttpResponse(status=200)
 
-def delete(request, character_id):
-    try:
-        character = Character.objects.get(pk=character_id)
-    except Character.DoesNotExist:
-        raise Http404("Character does not exist")
-    if request.user.is_authenticated and request.user == character.user:
-        Character.objects.filter(pk=character_id).delete()
-    character_list = Character.objects.all()
-    context = {'character_list': character_list}
-    return render(request, 'whitebox/ViewAll.html', context)
-
 def character_generate(request, name):
     character = Character()
     character.roll(name)
