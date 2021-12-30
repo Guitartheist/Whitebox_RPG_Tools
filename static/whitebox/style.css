@@ -1,14 +1,3 @@
-/* css Zen Garden default style v1.02 */
-/* css released under Creative Commons License - http://creativecommons.org/licenses/by-nc-sa/1.0/  */
-
-/* This file based on 'Tranquille' by Dave Shea */
-/* You may use this file as a foundation for any new work, but you may find it easier to start from scratch. */
-/* Not all elements are defined in this file, so you'll most likely want to refer to the xhtml as well. */
-
-/* Your images should be linked as if the CSS file sits in the same folder as the images. ie. no paths. */
-
-
-/* basic elements */
 html {
 	margin: 0;
 	padding: 0;
@@ -39,6 +28,7 @@ ul {
 	padding: 0;
 	}
 li {
+    color: #FF3300;
 	line-height: 1.3em; 
 	display: block; 
 	padding-top: 5px; 
@@ -51,3 +41,63 @@ li a:link {
 li a:visited {
 	color: #FF3300;
 	}
+
+.CharacterList {
+    text-align: left;
+    width: 50vw;
+    height: 70vh;
+}
+
+.CharacterDetail {
+    text-align: left;
+    vertical-align: top;
+    width: 50vw;
+    height: 70vh;
+}
+
+.CharacterStatistic {
+    text-align: right;
+    vertical-align: top;
+    width: 100px;
+}
+
+.CharacterCreate {
+    text-align: left;
+    width: 50vw;
+    height: 70vh;
+}
+
+.LoginVue {
+    text-align: left;
+    width: 50vw;
+    height: 70vh;
+}
+
+.RegisterVue {
+    text-align: left;
+    width: 50vw;
+    height: 70vh;
+}
+
+.Navigation {
+    padding-left: 20px;
+    padding-right: 20px;
+    background-color: #BBBBBB;
+}
+
+.DumpValue {
+    width: 70px;
+    text-align: center;
+}
+
+.DumpControlEnabled {
+    font: 120% georgia, sans-serif;
+    width: 35px;
+    text-align: center;
+    background-color: #00CC00;
+}
+
+.DumpControlDisabled{
+    width: 35px;
+    text-align: center;
+}

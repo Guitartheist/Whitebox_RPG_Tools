@@ -1,0 +1,17 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+    <link rel="stylesheet" href="{% static 'whitebox/style.css' %}">
+    <title>{% block title %}Whitebox{% endblock %}</title>
+</head>
+    <body>
+    {% csrf_token %}
+    <center><h1>Whitebox Character Manager</h1></center>
+        <div id="app"></div>
+        <script type="text/javascript" src="{% static 'src/vue/dist/js/chunk-vendors.js' %}"></script>
+        <script type="text/javascript" src="{% static 'src/vue/dist/js/app.js' %}"></script>
+        <link href="{% static 'src/vue/dist/css/app.css' %}" rel=stylesheet>
+    </body>
+</html>

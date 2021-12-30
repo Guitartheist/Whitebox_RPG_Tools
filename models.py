@@ -32,6 +32,12 @@ class Character(models.Model):
     c_role = models.IntegerField(null=True)
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
     finalized = models.BooleanField(default=False)
+
+    def get_username(self):
+        if (self.user):
+            return self.user.username
+        return ''
+
     def get_role(self):
         if (self.c_role is not None):
             if (self.c_role == 0):
@@ -103,28 +109,28 @@ class Character(models.Model):
         if (self.charisma - ch < 9 and ch > 0):
             r += dump_from.replace("?","charisma")
 
-        if (c_role == self.FIGHTER):
+        if (int(c_role) == self.FIGHTER):
             if total_dump + self.strength - s > 18:
                 r += dump_to.replace("?", "strength")
             else:
                 self.strength += total_dump - s
-        elif (c_role == self.MAGE):
+        elif (int(c_role) == self.MAGE):
             if total_dump + self.intelligence - i > 18:
                 r += dump_to.replace("?", "intelligence")
             else:
                 self.intelligence += total_dump - i
-        elif (c_role == self.THIEF):
+        elif (int(c_role) == self.THIEF):
             if total_dump + self.dexterity + d > 18:
                 r += dump_to.replace("?", "dexterity")
             else:
                 self.dexterity += total_dump - d
-        elif (c_role == self.CLERIC):
+        elif (int(c_role) == self.CLERIC):
             if total_dump + self.wisdom + w > 18:
                 r += dump_to.replace("?", "wisdom")
             else:
                 self.wisdom += total_dump - w
         else:
-            r += "Invalid character role selected."
+            r += "Invalid character role " + c_role + " selected."
 
         if (len(r) == 0):
             self.strength -= s
