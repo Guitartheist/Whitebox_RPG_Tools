@@ -60,7 +60,7 @@ class CharacterListPagination(PageNumberPagination):
     max_page_size = 100
 
 class CharacterListView(generics.ListAPIView):
-    queryset = Character.objects.order_by('id')
+    queryset = Character.objects.order_by('-id')
     serializer_class = CharacterSerializer
     pagination_class = CharacterListPagination
 
@@ -82,7 +82,7 @@ def character_detail(request, pk):
         return JsonResponse(serializer.data)
 
     elif request.method == 'PUT':
-        if request.user.is_authenticated and request.user == character.user:
+        if (request.user.is_authenticated and request.user == character.user) or character.user is None:
             data = JSONParser().parse(request)
             c_role = data['c_role']
             s = data['strength']
@@ -98,7 +98,7 @@ def character_detail(request, pk):
         return HttpResponse(status=404)
 
     elif request.method == 'DELETE':
-        if request.user.is_authenticated and request.user == character.user:
+        if (request.user.is_authenticated and request.user == character.user) or character.user is None:
             character.delete()
         return HttpResponse(status=204)
 
