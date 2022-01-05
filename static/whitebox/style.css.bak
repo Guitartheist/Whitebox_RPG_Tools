@@ -79,11 +79,15 @@ li a:visited {
     height: 70vh;
 }
 
+.ShoppingTable {
+	border: 2px black;
+}
+
 .ShoppingValue {
 	text-align: left;
 	padding-left: 10px;
     padding-right: 10px;
-	border: 1px solid black;
+	
 }
 
 .Navigation {

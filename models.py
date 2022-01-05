@@ -14,6 +14,26 @@ def roll_starting_cash():
         a += random.randrange(1, 6) * 10
     return a
 
+class MeleeWeapon(models.Model):
+    name = models.CharField(max_length=40)
+    damage = models.CharField(max_length=40)
+    weight = models.IntegerField()
+    cost_gp = models.IntegerField()
+
+    def __str__(self):
+        r = self.name + " / " + self.damage + " / " + str(self.weight) + " / " + str(self.cost_gp) + " gp "
+        return r
+
+# USAGE: To add melee weapons to a character,
+# MeleeWeaponQuantity.objects.create(character=character, melee_weapon=melee_weapon, quantity =quantity)
+class MeleeWeaponQuantity(models.Model):
+    character = models.ForeignKey('Character', related_name = 'melee_weapon_quantity', on_delete = models.SET_NULL, null = True)
+    melee_weapon = models.ForeignKey('MeleeWeapon', related_name = 'melee_weapon_quantity', on_delete = models.SET_NULL, null = True, blank = True)
+    quantity = models.IntegerField(default=1)
+    
+    def __str__(self):
+        return str(self.character.name) + " " + str(self.character.id) + " / " + str(self.melee_weapon.name)
+
 class Character(models.Model):
     FIGHTER = 0
     MAGE = 1
@@ -32,6 +52,7 @@ class Character(models.Model):
     c_role = models.IntegerField(null=True)
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
     finalized = models.BooleanField(default=False)
+    melee_weapons = models.ManyToManyField('MeleeWeapon', through='MeleeWeaponQuantity', related_name='melee_weapons')
 
     def get_username(self):
         if (self.user):
@@ -64,6 +85,7 @@ class Character(models.Model):
         self.silver = 0
         self.copper = 0
         return self
+        
     def __str__(self):
         r = self.name + ": STR " + str(self.strength) + " / "
         r += "DEX " + str(self.dexterity) + " / "
@@ -79,10 +101,17 @@ class Character(models.Model):
         else:
             r += "Created by " + self.user.username
         if self.finalized:
-            return " / Character has been finalized."
+            r += " / Character has been finalized."
         else:
             r += " / Character not yet finalized."
         return r
+        
+    def purchase_melee_weapon(self, melee_weapon):
+        if (self.gold >= melee_weapon.cost_gp):
+            self.gold -= melee_weapon.cost_gp
+            melee_weapon_quantity = MeleeWeaponQuantity.objects.create(character=self, melee_weapon=melee_weapon, quantity = 1)
+            self.save()
+        
     # used to see if dumping points into core role stat is legal
     # if dump is legal, performs dump. Character will still need to be saved.
     # s d c i w c = strength dexterity constitution intelligence wisdom charisma

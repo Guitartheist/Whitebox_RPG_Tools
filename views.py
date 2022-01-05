@@ -5,8 +5,8 @@ from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
 from django.shortcuts import render
 from django.urls import reverse
-from .models import Character
-from .serializers import CharacterSerializer
+from .models import Character, MeleeWeapon
+from .serializers import CharacterSerializer, MeleeWeaponSerializer
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 
@@ -54,7 +54,7 @@ def character_generate(request, name):
     serializer = CharacterSerializer(character)
     return JsonResponse(serializer.data, status=201)
 
-class CharacterListPagination(PageNumberPagination):
+class ListPagination(PageNumberPagination):
     page_size = 15
     page_size_query_param = 'page_size'
     max_page_size = 100
@@ -62,15 +62,34 @@ class CharacterListPagination(PageNumberPagination):
 class CharacterListView(generics.ListAPIView):
     queryset = Character.objects.order_by('-id')
     serializer_class = CharacterSerializer
-    pagination_class = CharacterListPagination
+    pagination_class = ListPagination
 
 class MyCharacterListView(generics.ListAPIView):
     def get_queryset(self):
         u = self.request.user
         return Character.objects.order_by('id').filter(user = u)
     serializer_class = CharacterSerializer
-    pagination_class = CharacterListPagination
-
+    pagination_class = ListPagination
+    
+class MeleeWeaponListView(generics.ListAPIView):
+    queryset = MeleeWeapon.objects.order_by('name')
+    serializer_class = MeleeWeaponSerializer
+    pagination_class = ListPagination
+    
+def MeleeWeaponTransaction(request):
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        character_id = data['character_id']
+        melee_weapon_id = data['melee_weapon_id']
+        
+        character = Character.objects.get(pk = character_id)
+        melee_weapon = MeleeWeapon.objects.get(pk = melee_weapon_id)
+        
+        character.purchase_melee_weapon(melee_weapon)
+        
+        serializer = CharacterSerializer(character)
+        return JsonResponse(serializer.data)
+    
 def character_detail(request, pk):
     try:
         character = Character.objects.get(pk=pk)
