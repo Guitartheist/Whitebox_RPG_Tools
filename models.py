@@ -32,7 +32,7 @@ class MeleeWeaponQuantity(models.Model):
     quantity = models.IntegerField(default=1)
     
     def __str__(self):
-        return str(self.character.name) + " / " + str(self.melee_weapon.name)
+        return str(self.character.name) + " " + str(self.character.id) + " / " + str(self.melee_weapon.name)
 
 class Character(models.Model):
     FIGHTER = 0
