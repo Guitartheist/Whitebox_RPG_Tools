@@ -21,7 +21,7 @@ urlpatterns = [
     #MeleeWeaponList and MeleeWeapon stuff
     path('MeleeWeaponList', views.MeleeWeaponListView.as_view()),
     #POST used for buying
-    path('MeleeWeaponTransaction', views.MeleeWeaponTransaction),
+    path('MeleeWeaponTransaction', views.MeleeWeaponTransaction()),
     
     #MeleeWeapon stuff
     

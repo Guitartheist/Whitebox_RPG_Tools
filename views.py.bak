@@ -81,12 +81,8 @@ def MeleeWeaponTransaction(request):
         data = JSONParser().parse(request)
         character_id = data['character_id']
         melee_weapon_id = data['melee_weapon_id']
-        
         character = Character.objects.get(pk = character_id)
         melee_weapon = MeleeWeapon.objects.get(pk = melee_weapon_id)
-        
-        character.purchase_melee_weapon(melee_weapon)
-        
         serializer = CharacterSerializer(character)
         return JsonResponse(serializer.data)
     
