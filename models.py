@@ -13,7 +13,7 @@ def roll_starting_cash():
     for x in range(3):
         a += random.randrange(1, 6) * 10
     return a
-
+        
 class MeleeWeapon(models.Model):
     name = models.CharField(max_length=40)
     damage = models.CharField(max_length=40)
@@ -33,6 +33,25 @@ class MeleeWeaponQuantity(models.Model):
     
     def __str__(self):
         return str(self.character.name) + " " + str(self.character.id) + " / " + str(self.melee_weapon.name)
+        
+class RangedWeapon(models.Model):
+    name = models.CharField(max_length=40)
+    damage = models.CharField(max_length=40)
+    weight = models.IntegerField()
+    rof = models.FloatField()
+    w_range = models.IntegerField()
+    cost_gp = models.IntegerField()
+
+    def __str__(self):
+        r = self.name + " / " + self.damage + " / " + str(self.rof) + " / " + str(self.w_range) + " / "  + str(self.weight) + " / " +  str(self.cost_gp) + " gp "
+        return r
+
+# USAGE: To add ranged weapons to a character,
+# RangedWeaponQuantity.objects.create(character=character, melee_weapon=melee_weapon, quantity =quantity)        
+class RangedWeaponQuantity(models.Model):
+    character = models.ForeignKey('Character', related_name = 'raned_weapon_quantity', on_delete = models.SET_NULL, null = True)
+    ranged_weapon = models.ForeignKey('RangedWeapon', related_name = 'ranged_weapon_quantity', on_delete = models.SET_NULL, null = True, blank = True)
+    quantity = models.IntegerField(default=1)
 
 class Character(models.Model):
     FIGHTER = 0
@@ -53,6 +72,7 @@ class Character(models.Model):
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
     finalized = models.BooleanField(default=False)
     melee_weapons = models.ManyToManyField('MeleeWeapon', through='MeleeWeaponQuantity', related_name='melee_weapons')
+    ranged_weapons = models.ManyToManyField('RangedWeapon', through='RangedWeaponQuantity', related_name='ranged_weapons')
 
     def get_username(self):
         if (self.user):
@@ -110,6 +130,12 @@ class Character(models.Model):
         if (self.gold >= melee_weapon.cost_gp):
             self.gold -= melee_weapon.cost_gp
             melee_weapon_quantity = MeleeWeaponQuantity.objects.create(character=self, melee_weapon=melee_weapon, quantity = 1)
+            self.save()
+            
+    def purchase_ranged_weapon(self, ranged_weapon):
+        if (self.gold >= ranged_weapon.cost_gp):
+            self.gold -= ranged_weapon.cost_gp
+            ranged_weapon_quantity = RangedWeaponQuantity.objects.create(character=self, ranged_weapon=ranged_weapon, quantity = 1)
             self.save()
         
     # used to see if dumping points into core role stat is legal

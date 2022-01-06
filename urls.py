@@ -23,6 +23,11 @@ urlpatterns = [
     #POST used for buying
     path('MeleeWeaponTransaction', views.MeleeWeaponTransaction),
     
+    #RangedWeaponList and RangedWeapon stuff
+    path('RangedWeaponList', views.RangedWeaponListView.as_view()),
+    #POST used for buying
+    path('RangedWeaponTransaction', views.RangedWeaponTransaction),
+    
     #MeleeWeapon stuff
     
     #single page application URLs
