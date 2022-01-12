@@ -5,8 +5,8 @@ from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
 from django.shortcuts import render
 from django.urls import reverse
-from .models import Character, MeleeWeapon
-from .serializers import CharacterSerializer, MeleeWeaponSerializer
+from .models import Character, MeleeWeapon, RangedWeapon
+from .serializers import CharacterSerializer, MeleeWeaponSerializer, RangedWeaponSerializer
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 
@@ -86,6 +86,25 @@ def MeleeWeaponTransaction(request):
         melee_weapon = MeleeWeapon.objects.get(pk = melee_weapon_id)
         
         character.purchase_melee_weapon(melee_weapon)
+        
+        serializer = CharacterSerializer(character)
+        return JsonResponse(serializer.data)
+        
+class RangedWeaponListView(generics.ListAPIView):
+    queryset = RangedWeapon.objects.order_by('name')
+    serializer_class = RangedWeaponSerializer
+    pagination_class = ListPagination
+    
+def RangedWeaponTransaction(request):
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        character_id = data['character_id']
+        ranged_weapon_id = data['ranged_weapon_id']
+        
+        character = Character.objects.get(pk = character_id)
+        ranged_weapon = RangedWeapon.objects.get(pk = ranged_weapon_id)
+        
+        character.purchase_ranged_weapon(ranged_weapon)
         
         serializer = CharacterSerializer(character)
         return JsonResponse(serializer.data)
